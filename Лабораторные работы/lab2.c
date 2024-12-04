@@ -1,63 +1,54 @@
 #include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
-#define MAX_STR_LEN 300
-
-// Функция для проверки наличия цифр в слове
-int hasDigits(const char *word) {
-    while (*word) {
-        if (*word >= '0' && *word <= '9') {
-            return 1;
+void processWord(const char *input, char *output) {
+    int j = 0;
+    for (int i = 0; input[i] != '\0'; i++) {
+        if (isdigit(input[i])) {
+            output[j++] = input[i];
         }
-        word++;
     }
-    return 0;
+    output[j] = '\0';
 }
 
-// Функция для удаления всех символов, кроме цифр
-void extractDigits(const char *word, char *result) {
-    while (*word) {
-        if (*word >= '0' && *word <= '9') {
-            *result++ = *word;
-        }
-        word++;
-    }
-    *result = '\0'; // Завершаем строку
-}
-
-// Основная программа
 int main() {
-    char str[MAX_STR_LEN];
-    char word[MAX_STR_LEN];
-    int i = 0, j = 0;
+    char input[300];
+    char copy[300];
+    char output[300];
 
-    // Ввод строки
-    printf("Введите строку (не более %d символов):\n", MAX_STR_LEN - 1);
-    fgets(str, MAX_STR_LEN, stdin);
+    printf("Введите строку:\n");
+    fgets(input, 300, stdin);
 
-    // Вывод исходной строки
-    printf("Исходная строка:\n%s", str);
+    size_t len = strlen(input);
+    if (input[len - 1] == '\n') {
+        input[len - 1] = '\0';
+    }
 
-    printf("Результат:\n");
+    printf("Исходная строка: %s\n", input);
 
-    // Разбор строки на слова
-    while (str[i] != '\0') {
-        if (str[i] != ' ' && str[i] != '.') {
-            word[j++] = str[i]; // Добавляем символ в текущее слово
-        } else {
-            if (j > 0) { // Если слово не пустое
-                word[j] = '\0'; // Завершаем строку
-                j = 0;
+    strcpy(copy, input);
 
-                // Обрабатываем слово, если оно не последнее и содержит цифры
-                if (str[i] != '.' && hasDigits(word)) {
-                    char digits[MAX_STR_LEN];
-                    extractDigits(word, digits);
-                    printf("%s\n", digits);
-                }
+    char *token = strtok(copy, " ");
+    char *lastWord = NULL;
+
+    while (token != NULL) {
+        lastWord = token;
+        token = strtok(NULL, " ");
+    }
+
+    strcpy(copy, input);
+    token = strtok(copy, " ");
+
+    printf("Слова, содержащие цифры (преобразованные):\n");
+    while (token != NULL && token != lastWord) {
+        if (strcmp(token, lastWord) != 0) { // Игнорируем последнее слово
+            processWord(token, output);
+            if (strlen(output) > 0) { // Если в слове есть цифры
+                printf("%s\n", output);
             }
         }
-        i++;
+        token = strtok(NULL, " ");
     }
-    
     return 0;
 }

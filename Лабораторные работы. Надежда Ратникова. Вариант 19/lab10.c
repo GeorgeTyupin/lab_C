@@ -12,7 +12,7 @@ void createFile(const char* filename) {
 
     srand(time(NULL));
 
-    int num_numbers = rand() % 21 + 10;
+    int num_numbers = rand() % 11 + 5;
 
     for (int i = 0; i < num_numbers; i++) {
         int random_number = rand() % 101 - 50;  // [ -50, 50 ]
@@ -24,7 +24,7 @@ void createFile(const char* filename) {
 
 // Функция для удаления из файла всех четных положительных чисел
 void processFile(const char* filename) {
-    FILE* file = fopen(filename, "r");
+    /*FILE* file = fopen(filename, "r");
     if (!file) {
         perror("Ошибка при открытии файла для чтения");
         exit(EXIT_FAILURE);
@@ -50,7 +50,60 @@ void processFile(const char* filename) {
     if (remove(filename) != 0 || rename("temp.txt", filename) != 0) {
         perror("Ошибка при замене файла");
         exit(EXIT_FAILURE);
+    }*/
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Ошибка открытия файла");
+        return;
     }
+    int *buffer = malloc(sizeof(int) * 100);
+    if (buffer == NULL) {
+        perror("Ошибка выделения памяти");
+        fclose(file);
+        return;
+    }
+
+    int size = 0;
+    int capacity = 100;
+    int number;
+    while (fscanf(file, "%d", &number) != EOF) {
+        if (size >= capacity) {
+            capacity *= 2;
+            buffer = realloc(buffer, sizeof(int) * capacity);
+            if (buffer == NULL) {
+                perror("Ошибка выделения памяти");
+                fclose(file);
+                return;
+            }
+        }
+        buffer[size++] = number;
+    }
+    fclose(file);
+
+    int max_value = buffer[0];
+    int last_max_pos = 0;
+    for (int i = 1; i < size; i++) {
+        if (buffer[i] >= max_value) {
+            max_value = buffer[i];
+            last_max_pos = i;
+        }
+    }
+
+    file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Ошибка при открытии файла для записи");
+        free(buffer);
+        return;
+    }
+
+    for (int i = 0; i < size; i++) {
+        if (i <= last_max_pos || buffer[i] <= 0) {
+            fprintf(file, "%d\n", buffer[i]);
+        }
+    }
+
+    fclose(file);
+    free(buffer); 
 }
 
 // Функция для вывода содержимого файла

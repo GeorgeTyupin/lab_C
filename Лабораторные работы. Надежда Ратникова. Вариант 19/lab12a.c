@@ -11,6 +11,10 @@ typedef struct Node {
 // Функция для создания нового узла
 Node* createNode(int coefficient, int power) {
     Node* newNode = (Node*)malloc(sizeof(Node));
+    if (newNode == NULL) {
+        printf("Ошибка выделения памяти\n");
+        exit(1); // Завершаем программу, если память не выделена
+    }
     newNode->coefficient = coefficient;
     newNode->power = power;
     newNode->next = NULL;
@@ -38,18 +42,18 @@ void printPolynomial(Node* head) {
     printf("\n");
 }
 
-// Функция для удаления элементов с чётными степенями
-Node* removeEvenPowers(Node* head) {
+// Функция для удаления слагаемых со степенями меньшими заданного значения k
+Node* removeLowerPowers(Node* head, int k) {
     Node* temp = head;
     Node* prev = NULL;
 
     while (temp != NULL) {
-        if (temp->power % 2 == 0) {
-            if (prev == NULL) {
+        if (temp->power < k) { // Удаляем слагаемое, если степень меньше k
+            if (prev == NULL) { // Если удаляем первый элемент
                 head = temp->next;
                 free(temp);
                 temp = head;
-            } else {
+            } else { // Если удаляем элемент, не первый
                 prev->next = temp->next;
                 free(temp);
                 temp = prev->next;
@@ -64,18 +68,18 @@ Node* removeEvenPowers(Node* head) {
 
 int main() {
     // Создание списка вручную
-    Node* polynomial = createNode(2, 1);
-    polynomial->next = createNode(-5, 2);
-    polynomial->next->next = createNode(1, 4);
+    Node* polynomial = createNode(-5, 2);
+    polynomial->next = createNode(1, 3);
+    polynomial->next->next = createNode(2, 1);
     polynomial->next->next->next = createNode(-3, 5);
 
     printf("Исходный многочлен: ");
     printPolynomial(polynomial);
 
-    // Удаление слагаемых с чётными степенями
-    polynomial = removeEvenPowers(polynomial);
+    // Удаление слагаемых со степенями меньшими 3
+    polynomial = removeLowerPowers(polynomial, 3);
 
-    printf("Многочлен после удаления чётных степеней: ");
+    printf("Многочлен после удаления слагаемых с степенями меньше 3: ");
     printPolynomial(polynomial);
 
     return 0;

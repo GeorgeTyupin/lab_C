@@ -10,32 +10,30 @@ long long factorial(int n) {
     return fact;
 }
 
-//Функция вычистения арккосинуса с заданной точностью
-double arccos_with_precision(double x, double epsilon) {
-    double sum = M_PI / 2;
+//Функция вычистения sin^2(x) с заданной точностью
+double sin2_with_precision(double x, double epsilon) {
+    double sum = 0.0;
     double term;
-    int n = 0;
-
+    int n = 1;
     do {
-        term = (factorial(2 * n) / (pow(2, 2 * n) * pow(factorial(n), 2) * (2 * n + 1))) * pow(x, 2 * n + 1);
-        sum -= term;
+
+        term = pow(-1, n + 1) * pow(2, 2 * n - 1) * pow(x, 2 * n) / factorial(2 * n);
+        sum += term;
         n++;
     } while (fabs(term) > epsilon);
-
     return sum;
 }
 
-//Функция вычистения арккосинуса для заданного количества членов
-double arccos_with_terms(double x, int terms) {
-    double result = M_PI / 2;
-
-    for (int n = 0; n < terms; ++n) {
-        double term = (factorial(2 * n) / (pow(4, n) * pow(factorial(n), 2) * (2 * n + 1))) * pow(x, 2 * n + 1);
-        result -= term;
+//Функция вычистения sin^2(x) для заданного количества членов
+double sin2x_with_terms(double x, int terms) {
+    double result = 0.0;
+    for (int n = 1; n <= terms; n++) {
+        double term = pow(-1, n + 1) * pow(2, 2 * n - 1) * pow(x, 2 * n) / factorial(2 * n);
+        result += term;
     }
-    printf("Приближенное значение арккосинуса: %f\n", result);
     return result;
 }
+
 
 int main() {
     int choice;
@@ -62,10 +60,10 @@ int main() {
             printf("Введите значение точности epsilon: ");
             scanf("%lf", &epsilon);
 
-            double result = arccos_with_precision(x, epsilon);
+            double result = sin2_with_precision(x, epsilon);
 
             if (!isnan(result)) {
-                printf("arccos(%lf) с точностью %f = %.10lf\n", x, epsilon, result);
+                printf("sin^2(%lf) с точностью %f = %.10lf\n", x, epsilon, result);
             }
 
             return 0;
@@ -76,10 +74,10 @@ int main() {
             scanf("%d", &terms);
 
             // Вычисление арккосинуса
-            double result = arccos_with_terms(x, terms);
+            double result = sin2x_with_terms(x, terms);
 
             if (result != -1) {
-                printf("Приближенное значение arccos(%lf) = %.10lf\n", x, result);
+                printf("Приближенное значение sin^2(%lf) = %.10lf\n", x, result);
             }
             break;
         }

@@ -36,7 +36,6 @@ void processFile(const char* filename) {
 
     int number;
     while (fscanf(file, "%d", &number) != EOF) {
-        // Записываем только те числа, которые не являются четными положительными
         if (!(number > 0 && number % 2 == 0)) {
             fprintf(temp, "%d\n", number);
         }
@@ -45,7 +44,6 @@ void processFile(const char* filename) {
     fclose(file);
     fclose(temp);
 
-    // Заменяем исходный файл временным
     if (remove(filename) != 0 || rename("temp.txt", filename) != 0) {
         perror("Ошибка при замене файла");
         exit(EXIT_FAILURE);
@@ -69,21 +67,15 @@ void displayFile(const char* filename) {
     fclose(file);
 }
 
-// Основная программа
 int main() {
     const char *filename = "numbers.txt";
-
-    // Создание исходного файла
     createFile(filename);
 
-    // Вывод содержимого исходного файла
     printf("Исходный файл:\n");
     displayFile(filename);
 
-    // Обработка файла
     processFile(filename);
 
-    // Вывод результата
     printf("\nФайл после обработки:\n");
     displayFile(filename);
 

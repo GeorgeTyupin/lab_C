@@ -10,6 +10,7 @@ long long factorial(int n) {
     return fact;
 }
 
+//Функция вычистения арккосинуса с заданной точностью
 double arccos_with_precision(double x, double epsilon) {
     double sum = M_PI / 2;
     double term;
@@ -24,6 +25,7 @@ double arccos_with_precision(double x, double epsilon) {
     return sum;
 }
 
+//Функция вычистения арккосинуса для заданного количества членов
 double arccos_with_terms(double x, int terms) {
     double result = M_PI / 2;
 
@@ -40,7 +42,6 @@ int main() {
     double x;
     int terms;
 
-    // Ввод значений
     printf("Введите значение x (от -1 до 1): ");
     scanf("%lf", &x);
 

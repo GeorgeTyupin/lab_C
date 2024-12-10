@@ -33,7 +33,6 @@ double arccos_with_terms(double x, int terms) {
         double term = (factorial(2 * n) / (pow(4, n) * pow(factorial(n), 2) * (2 * n + 1))) * pow(x, 2 * n + 1);
         result -= term;
     }
-    printf("Приближенное значение арккосинуса: %f\n", result);
     return result;
 }
 
@@ -46,7 +45,7 @@ int main() {
     scanf("%lf", &x);
 
     if (x <= -1 || x >= 1) {
-        printf("Ошибка: x должно быть в диапазоне (-1, 1)\\n");
+        printf("Ошибка: x должно быть в диапазоне (-1, 1)\n");
         return 1;
     }
 
@@ -59,7 +58,7 @@ int main() {
         case 1: {
             double epsilon;
 
-            printf("Введите значение точности epsilon: ");
+            printf("Введите значение точности: ");
             scanf("%lf", &epsilon);
 
             double result = arccos_with_precision(x, epsilon);

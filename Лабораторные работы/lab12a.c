@@ -63,7 +63,7 @@ Node* removeEvenPowers(Node* head) {
 }
 
 int main() {
-    // Создание списка вручную
+    // Создание многочлена вручную
     Node* polynomial = createNode(2, 1);
     polynomial->next = createNode(-5, 2);
     polynomial->next->next = createNode(1, 4);

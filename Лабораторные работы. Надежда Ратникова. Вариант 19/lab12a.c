@@ -67,7 +67,7 @@ Node* removeLowerPowers(Node* head, int k) {
 }
 
 int main() {
-    // Создание списка вручную
+    // Создание многочлена вручную
     Node* polynomial = createNode(-5, 2);
     polynomial->next = createNode(1, 3);
     polynomial->next->next = createNode(2, 1);

@@ -24,33 +24,6 @@ void createFile(const char* filename) {
 
 // Функция для удаления из файла всех четных положительных чисел
 void processFile(const char* filename) {
-    /*FILE* file = fopen(filename, "r");
-    if (!file) {
-        perror("Ошибка при открытии файла для чтения");
-        exit(EXIT_FAILURE);
-    }
-
-    FILE* temp = fopen("temp.txt", "w");
-    if (!temp) {
-        perror("Ошибка при создании временного файла");
-        fclose(file);
-        exit(EXIT_FAILURE);
-    }
-
-    int number;
-    while (fscanf(file, "%d", &number) != EOF) {
-        if (!(number > 0 && number % 2 == 0)) {
-            fprintf(temp, "%d\n", number);
-        }
-    }
-
-    fclose(file);
-    fclose(temp);
-
-    if (remove(filename) != 0 || rename("temp.txt", filename) != 0) {
-        perror("Ошибка при замене файла");
-        exit(EXIT_FAILURE);
-    }*/
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         perror("Ошибка открытия файла");

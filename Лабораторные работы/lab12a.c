@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 // Структура для узла списка
 typedef struct Node {
@@ -10,7 +11,11 @@ typedef struct Node {
 
 // Функция для создания нового узла
 Node* createNode(int coefficient, int power) {
-    Node* newNode = (Node*)malloc(sizeof(Node));
+    Node* newNode = malloc(sizeof(Node));
+    if (!newNode) {
+        printf("Ошибка выделения памяти.\n");
+        exit(1);
+    }
     newNode->coefficient = coefficient;
     newNode->power = power;
     newNode->next = NULL;
@@ -62,12 +67,52 @@ Node* removeEvenPowers(Node* head) {
     return head;
 }
 
+int is_natural(double n) {
+    return (n <= 0 || (int)n != n) ? 1 : 0;
+}
+
+// Функция для ввода многочлена
+Node* inputPolynomial() {
+    Node* top = NULL;
+    Node* tail = NULL;
+    float n;
+    char input[100];
+
+    printf("Введите количество членов многочлена: ");
+    scanf("%f", &n);
+    if ( is_natural(n) ) {
+        printf("Ошибка ввода.");
+        return NULL;
+    }
+    
+
+    for (int i = 0; i < n; i++) {
+        double coefficient, power;
+        printf("Введите коэффициент и степень для члена %d (через пробел): ", i + 1);
+        scanf("%lf %lf", &coefficient, &power);
+
+        Node* newNode = createNode(coefficient, power);
+
+        if (top == NULL) {
+            top = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    return top;
+}
+
 int main() {
-    // Создание многочлена вручную
-    Node* polynomial = createNode(2, 7);
-    polynomial->next = createNode(-5, 1);
-    polynomial->next->next = createNode(1, 3);
-    polynomial->next->next->next = createNode(-3, 5);
+    // Ввод многочлена с консоли
+    printf("Ввод многчлена.\n");
+    Node* polynomial = inputPolynomial();
+    if ( polynomial == NULL ) {
+        return 0;
+    }
+
 
     printf("Исходный многочлен: ");
     printPolynomial(polynomial);

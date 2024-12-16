@@ -4,20 +4,10 @@
 
 int main() {
     // 117 + 70*256 + 7*256^2 + 0*256^3
-    int g = 476789;
-    char *ptr = (char *)&g;
+    double x = 1.2;
 
-    // for(int i = 0;i < sizeof(g); ++i) {
-    //     printf("%d ", *ptr++);
-    // }
 
-    printf("\n");
-    // int x = *ptr++;
-    // int x = *++ptr;
-    int x = (*ptr)++;
-    // int x = ++(*ptr);
-
-    printf("x = %d, g = %d, *ptr = %d, ptr = %d\n", x, g, *ptr, ptr);
+    printf("x = %d", (int)x % 2 == 0);
     
     return 0;
 }

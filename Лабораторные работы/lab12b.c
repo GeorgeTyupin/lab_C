@@ -40,22 +40,30 @@ void printList(Node* head) {
     printf("\n");
 }
 
-// Проверка, начинается ли слово с гласной
+// Проверка, начинается ли слово с гласной или согласной
 int startsWithVowel(const char* word) {
     if (!word || word[0] == '\0') return 0;
     
     char first = tolower((char)word[0]);
 
-    return first == 'a' || first == 'e' || first == 'i' || first == 'o' || first == 'u' || first == 'y';
+    if (first == 'a' || first == 'e' || first == 'i' || first == 'o' || first == 'u' || first == 'y') {
+        return 1;
+    } else if (first == 'b' || first == 'c' || first == 'd' || first == 'f' || first == 'g' ||
+               first == 'h' || first == 'j' || first == 'k' || first == 'l' || first == 'm' ||
+               first == 'n' || first == 'p' || first == 'q' || first == 'r' || first == 's' ||
+               first == 't' || first == 'v' || first == 'w' || first == 'x' || first == 'y' || 
+               first == 'z') {
+        return 2;
+    }
 }
 
 // Разделение списка на два
 void splitList(Node* head, Node** vowelsHead, Node** vowelsTail, Node** consonantsHead, Node** consonantsTail) {
     Node* current = head;
     while (current) {
-        if (startsWithVowel(current->word)) {
+        if ( startsWithVowel(current->word) == 1) {
             appendNode(vowelsHead, vowelsTail, current->word);
-        } else {
+        } else if (startsWithVowel(current->word) == 2) {
             appendNode(consonantsHead, consonantsTail, current->word);
         }
         current = current->next;

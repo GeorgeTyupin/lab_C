@@ -3,8 +3,9 @@
 #include <time.h>
 
 // Функция для создания исходного файла с целыми числами
-void createFile(const char* filename) {
+void randCreateFile(const char* filename) {
     FILE* file = fopen(filename, "w");
+
     if (!file) {
         perror("Ошибка при создании файла");
         exit(EXIT_FAILURE);
@@ -17,6 +18,30 @@ void createFile(const char* filename) {
     for (int i = 0; i < num_numbers; i++) {
         int random_number = rand() % 101 - 50;  // [ -50, 50 ]
         fprintf(file, "%d\n", random_number);
+    }
+
+    fclose(file);
+}
+
+void consoleCreateFile(const char* filename, const int num_numbers) {
+    double input_number;
+    FILE* file = fopen(filename, "w");
+
+    if (!file) {
+        perror("Ошибка при создании файла");
+        exit(EXIT_FAILURE);
+    }
+
+    for (int i = 0; i < num_numbers; i++) {
+        puts("Введите само число (целое) :");
+        scanf("%lf", &input_number);
+
+        if ( input_number != (int)input_number ) {
+            puts("Число не целое");
+            exit(EXIT_FAILURE);
+        }
+
+        fprintf(file, "%d\n", (int)input_number);
     }
 
     fclose(file);
@@ -71,8 +96,33 @@ void displayFile(const char* filename) {
 }
 
 int main() {
+    int choise;
     const char *filename = "numbers.txt";
-    createFile(filename);
+    double num_numbers;
+
+    puts("Введите 1 если хотите сами создать файл, a 2 если хотите, чтобы файл генерировался случайно:");
+    scanf("%d", &choise);
+    
+    switch (choise) {
+        case 1: {
+            puts("Введите количество чисел: ");
+            scanf("%lf", &num_numbers);
+            if (num_numbers <= 0 || num_numbers != (int)num_numbers) {
+                printf("*Ошибка:* Число должно быть натуральным.\n");
+                break;
+            }
+            consoleCreateFile(filename, (int)num_numbers);
+            break;
+        }
+        case 2: {
+            randCreateFile(filename);
+            break;
+        }
+        default: {
+            printf("Ошибка: Некорректный выбор\n");
+            break;
+        }
+    }
 
     printf("Исходный файл:\n");
     displayFile(filename);

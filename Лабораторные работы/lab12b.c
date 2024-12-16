@@ -44,12 +44,9 @@ void printList(Node* head) {
 int startsWithVowel(const char* word) {
     if (!word || word[0] == '\0') return 0;
     
-    char first = tolower((unsigned char)word[0]);
+    char first = tolower((char)word[0]);
 
-    return (first == 'a' || first == 'e' || first == 'i' || first == 'o' || 
-        first == 'u' || first == 'y' || first == 'а' || first == 'е' || 
-        first == 'ё' || first == 'и' || first == 'о' || first == 'у' || 
-        first == 'ы' || first == 'э' || first == 'ю' || first == 'я');
+    return first == 'a' || first == 'e' || first == 'i' || first == 'o' || first == 'u' || first == 'y';
 }
 
 // Разделение списка на два

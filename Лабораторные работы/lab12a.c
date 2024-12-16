@@ -64,9 +64,9 @@ Node* removeEvenPowers(Node* head) {
 
 int main() {
     // Создание многочлена вручную
-    Node* polynomial = createNode(2, 1);
-    polynomial->next = createNode(-5, 2);
-    polynomial->next->next = createNode(1, 4);
+    Node* polynomial = createNode(2, 7);
+    polynomial->next = createNode(-5, 1);
+    polynomial->next->next = createNode(1, 3);
     polynomial->next->next->next = createNode(-3, 5);
 
     printf("Исходный многочлен: ");

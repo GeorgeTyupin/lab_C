@@ -21,7 +21,7 @@ double arccos_with_precision(double x, double epsilon) {
         sum -= term;
         n++;
     } while (fabs(term) > epsilon);
-
+    
     return sum;
 }
 
@@ -39,7 +39,7 @@ double arccos_with_terms(double x, int terms) {
 int main() {
     int choice;
     double x;
-    int terms;
+    double terms;
 
     printf("Введите значение x (от -1 до 1): ");
     scanf("%lf", &x);
@@ -53,14 +53,18 @@ int main() {
     printf("1 - С заданной точностью\n");
     printf("2 - Для заданного количества членов\n");
     scanf("%d", &choice);
-    
+
     switch (choice) {
         case 1: {
             double epsilon;
 
-            printf("Введите значение точности: ");
+            printf("Введите значение точности (больше нуля): ");
             scanf("%lf", &epsilon);
 
+            if ( epsilon <= 0 ) {
+                printf("Значение точности меньше или равно нулю. Ошибка");
+            }
+                
             double result = arccos_with_precision(x, epsilon);
 
             if (!isnan(result)) {
@@ -71,11 +75,15 @@ int main() {
             break;
         }
         case 2: {
-            printf("Введите количество членов ряда: ");
-            scanf("%d", &terms);
-
+            printf("Введите количество членов ряда (Натуральное): ");
+            scanf("%lf", &terms);
+            if (terms <= 0 || terms != (int)terms) {
+                printf("*Ошибка:* Число должно быть натуральным.\n");
+                break;
+            }
+    
             // Вычисление арккосинуса
-            double result = arccos_with_terms(x, terms);
+            double result = arccos_with_terms(x, (int)terms);
 
             if (result != -1) {
                 printf("Приближенное значение arccos(%lf) = %.10lf\n", x, result);

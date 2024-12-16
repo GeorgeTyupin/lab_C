@@ -120,7 +120,7 @@ int main() {
         }
         default: {
             printf("Ошибка: Некорректный выбор\n");
-            break;
+            return 0;
         }
     }
 

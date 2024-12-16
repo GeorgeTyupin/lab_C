@@ -43,6 +43,18 @@ void printPolynomial(Node* head) {
     printf("\n");
 }
 
+// Функция для проверки, существует ли степень в списке
+int doesPowerExist(Node* head, int power) {
+    Node* temp = head;
+    while (temp != NULL) {
+        if (temp->power == power) {
+            return 1;
+        }
+        temp = temp->next;
+    }
+    return 0;
+}
+
 // Функция для удаления элементов с чётными степенями
 Node* removeEvenPowers(Node* head) {
     Node* temp = head;
@@ -90,6 +102,11 @@ Node* inputPolynomial() {
         double coefficient, power;
         printf("Введите коэффициент и степень для члена %d (через пробел): ", i + 1);
         scanf("%lf %lf", &coefficient, &power);
+
+        if (doesPowerExist(top, power)) {
+            printf("Ошибка: член с такой степенью уже существует. Попробуйте снова.\n");
+            exit(EXIT_FAILURE);
+        }
 
         Node* newNode = createNode(coefficient, power);
 

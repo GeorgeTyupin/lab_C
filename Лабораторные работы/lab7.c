@@ -21,6 +21,22 @@ int isValidWord(const char *word) {
     return 1; // Валидное слово
 }
 
+int countWords(const char *str) {
+    int count = 0;
+    int inWord = 0;
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (!isspace(str[i]) && !inWord) {
+            inWord = 1;
+            count++;
+        } else if (isspace(str[i])) {
+            inWord = 0;
+        }
+    }
+
+    return count;
+}
+
 int main() {
     char input[300];
     char copy[300];
@@ -29,10 +45,19 @@ int main() {
     printf("Введите строку:\n");
     fgets(input, 300, stdin);
 
+    int wordCount = countWords(input);
+    if (wordCount < 1 || wordCount > 30) {
+        printf("Ошибка: количество слов в строке должно быть от 1 до 30! Вы ввели %d слов.\n", wordCount);
+        return 1;
+    }
+
     // Находим первую точку и обрезаем строку до неё
     char *dot = strchr(input, '.');
     if (dot != NULL) {
         *dot = '\0'; // Обрезаем строку на первой точке
+    } else {
+        puts("Строка не содержит точку");
+        return 0;
     }
 
     size_t len = strlen(input);

@@ -45,6 +45,8 @@ int main() {
     printf("Введите строку:\n");
     fgets(input, 300, stdin);
 
+    printf("Исходная строк: %s\n", input);
+
     int wordCount = countWords(input);
     if (wordCount < 1 || wordCount > 30) {
         printf("Ошибка: количество слов в строке должно быть от 1 до 30! Вы ввели %d слов.\n", wordCount);
@@ -65,7 +67,6 @@ int main() {
         input[len - 1] = '\0';
     }
 
-    printf("Исходная строка (без части после точки): %s\n", input);
 
     strcpy(copy, input);
 

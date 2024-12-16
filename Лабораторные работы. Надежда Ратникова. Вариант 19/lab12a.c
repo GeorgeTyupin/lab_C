@@ -66,13 +66,69 @@ Node* removeLowerPowers(Node* head, int k) {
     return head;
 }
 
-int main() {
-    // Создание многочлена вручную
-    Node* polynomial = createNode(-5, 2);
-    polynomial->next = createNode(1, 3);
-    polynomial->next->next = createNode(2, 1);
-    polynomial->next->next->next = createNode(-3, 5);
+int is_natural(double n) {
+    return (n <= 0 || (int)n != n) ? 1 : 0;
+}
 
+int doesPowerExist(Node* head, int power) {
+    Node* temp = head;
+    while (temp != NULL) {
+        if (temp->power == power) {
+            return 1;
+        }
+        temp = temp->next;
+    }
+    return 0;
+}
+
+// Функция для ввода многочлена
+Node* inputPolynomial() {
+    Node* top = NULL;
+    Node* tail = NULL;
+    float n;
+    char input[100];
+
+    printf("Введите количество членов многочлена: ");
+    scanf("%f", &n);
+    if ( is_natural(n) ) {
+        printf("Ошибка ввода.");
+        return NULL;
+    }
+    
+
+    for (int i = 0; i < n; i++) {
+        double coefficient, power;
+        printf("Введите коэффициент и степень для члена %d (через пробел): ", i + 1);
+        scanf("%lf %lf", &coefficient, &power);
+
+        if (doesPowerExist(top, power)) {
+            printf("Ошибка: член с такой степенью уже существует. Попробуйте снова.\n");
+            exit(EXIT_FAILURE);
+        }
+
+        Node* newNode = createNode(coefficient, power);
+
+        if (top == NULL) {
+            top = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    return top;
+}
+
+
+int main() {
+    // Ввод многочлена с консоли
+    printf("Ввод многчлена.\n");
+    Node* polynomial = inputPolynomial();
+    if ( polynomial == NULL ) {
+        return 0;
+    }
+    
     printf("Исходный многочлен: ");
     printPolynomial(polynomial);
 

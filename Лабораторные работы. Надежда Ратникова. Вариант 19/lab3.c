@@ -38,7 +38,7 @@ double sin2x_with_terms(double x, int terms) {
 int main() {
     int choice;
     double x;
-    int terms;
+    double terms;
 
     printf("Введите значение x (от -1 до 1): ");
     scanf("%lf", &x);
@@ -60,6 +60,10 @@ int main() {
             printf("Введите значение точности epsilon: ");
             scanf("%lf", &epsilon);
 
+            if ( epsilon <= 0 ) {
+                printf("Значение точности меньше или равно нулю. Ошибка");
+            }
+
             double result = sin2_with_precision(x, epsilon);
 
             if (!isnan(result)) {
@@ -72,9 +76,13 @@ int main() {
         case 2: {
             printf("Введите количество членов ряда: ");
             scanf("%d", &terms);
+            if (terms <= 0 || terms != (int)terms) {
+                printf("*Ошибка:* Число должно быть натуральным.\n");
+                break;
+            }
 
             // Вычисление арккосинуса
-            double result = sin2x_with_terms(x, terms);
+            double result = sin2x_with_terms(x, (int)terms);
 
             if (result != -1) {
                 printf("Приближенное значение sin^2(%lf) = %.10lf\n", x, result);

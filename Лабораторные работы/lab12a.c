@@ -43,17 +43,6 @@ void printPolynomial(Node* head) {
     printf("\n");
 }
 
-// Функция для проверки, существует ли степень в списке
-int doesPowerExist(Node* head, int power) {
-    Node* temp = head;
-    while (temp != NULL) {
-        if (temp->power == power) {
-            return 1;
-        }
-        temp = temp->next;
-    }
-    return 0;
-}
 
 // Функция для удаления элементов с чётными степенями
 Node* removeEvenPowers(Node* head) {
@@ -77,6 +66,18 @@ Node* removeEvenPowers(Node* head) {
         }
     }
     return head;
+}
+
+// Функция для проверки, существует ли степень в списке
+int doesPowerExist(Node* head, int power) {
+    Node* temp = head;
+    while (temp != NULL) {
+        if (temp->power == power) {
+            return 1;
+        }
+        temp = temp->next;
+    }
+    return 0;
 }
 
 int is_natural(double n) {
@@ -129,7 +130,6 @@ int main() {
     if ( polynomial == NULL ) {
         return 0;
     }
-
 
     printf("Исходный многочлен: ");
     printPolynomial(polynomial);

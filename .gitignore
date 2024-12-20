@@ -1,4 +1,5 @@
 .vscode/
-Отчеты/
 *.out
 *.exe
+*.zip
+*.o

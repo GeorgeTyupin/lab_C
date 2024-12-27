@@ -2,4 +2,7 @@
 *.out
 *.exe
 *.zip
+*.txt
+tempCodeRunnerFile.c
+test*
 *.o

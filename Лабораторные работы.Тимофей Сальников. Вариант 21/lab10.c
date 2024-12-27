@@ -108,7 +108,7 @@ int main() {
     scanf("%lf", &num_numbers);
     if (num_numbers <= 0 || num_numbers != (int)num_numbers) {
         printf("*Ошибка:* Число должно быть натуральным.\n");
-        return 0;
+        return 1;
     }
     consoleCreateFile(filename, (int)num_numbers);
 
@@ -116,9 +116,13 @@ int main() {
 
     printf("\nВведите номер элемента (N), перед которым нужно вставить сумму модулей: ");
     scanf("%lf", &N);
-    if (N <= 0 || N != (int)num_numbers) {
+    if (N > num_numbers) {
+        printf("Ошибка. N не может быть больше чем число компонент в файле\n");
+        return 1;
+    }
+    if (N <= 0 || N != (int)N) {
         printf("*Ошибка:* Число должно быть целым и не меньше чем 1.\n");
-        return 0;
+        return 1;
     }
 
     printf("Исходный файл:\n");

@@ -70,6 +70,17 @@ void splitList(Node* head, Node** vowelsHead, Node** vowelsTail, Node** consonan
     }
 }
 
+// Функция для освобождения памяти списка
+void freeList(Node* head) {
+    Node* current = head;
+    while (current) {
+        Node* nextNode = current->next;
+        free(current->word);
+        free(current);
+        current = nextNode;
+    }
+}
+
 int main() {
     char input[256];
     Node* head = NULL;
@@ -78,8 +89,24 @@ int main() {
     printf("Введите строку:\n");
     fgets(input, sizeof(input), stdin);
 
+    // Проверяем, заканчивается ли строка точкой
+    size_t len = strlen(input);
+    if (len == 0 || input[len - 1] != '\n' && input[len - 1] != '.') {
+        printf("Ошибка: строка должна заканчиваться точкой.\n");
+        return 1;
+    }
+    if (input[len - 1] == '\n') {
+        input[len - 1] = '\0'; // Удаляем символ новой строки
+    }
+
+    if (input[len - 2] != '.') {
+        printf("Ошибка: строка должна заканчиваться точкой.\n");
+        return 1;
+    }
+
     // Удаляем точку и разбиваем строку на слова
-    char* token = strtok(input, " .\n");
+    input[len - 2] = '\0'; // Удаляем точку
+    char* token = strtok(input, " ");
     while (token) {
         appendNode(&head, &tail, token);
         token = strtok(NULL, " .\n");
@@ -99,6 +126,10 @@ int main() {
     printf("Список слов, начинающихся с согласных:\n");
     printList(consonantsHead);
 
+    // Освобождаем память
+    freeList(head);
+    freeList(vowelsHead);
+    freeList(consonantsHead);
 
     return 0;
 }

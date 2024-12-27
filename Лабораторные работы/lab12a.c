@@ -123,6 +123,17 @@ Node* inputPolynomial() {
     return top;
 }
 
+// Функция для освобождения памяти
+void freePolynomial(Node* head) {
+    Node* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+
 int main() {
     // Ввод многочлена с консоли
     printf("Ввод многчлена.\n");
@@ -139,6 +150,9 @@ int main() {
 
     printf("Многочлен после удаления чётных степеней: ");
     printPolynomial(polynomial);
+
+    // Освобождение памяти
+    freePolynomial(polynomial);
 
     return 0;
 }

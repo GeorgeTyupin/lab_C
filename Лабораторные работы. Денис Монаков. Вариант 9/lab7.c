@@ -8,6 +8,17 @@ int compareStrings(const void *a, const void *b) {
     return strcmp(*(char **)a, *(const char **)b);
 }
 
+// Функция для проверки наличия хотя бы одного непустого символа
+int hasInvalidSymbols(const char *str) {
+    for (size_t i = 0; i < strlen(str); i++) {
+        if (!isspace((unsigned char)str[i]) && !isalnum((unsigned char)str[i]) && str[i] != ',') {
+            // Найден символ, который не пробел, не буква/цифра и не запятая
+            return 1;
+        }
+    }
+    return 0;
+}
+
 int main() {
     char input[500];
     char *words[50]; // Массив указателей на слова
@@ -21,6 +32,12 @@ int main() {
     if (input[len - 1] == '\n') {
         input[len - 1] = '\0';
         len--;
+    }
+
+    // Проверка наличия хотя бы одного непустого символа, такого как #, %, и другие
+    if (!hasInvalidSymbols(input)) {
+        printf("Ошибка: строка должна состоять только из латинских букв и/или цифр.\n");
+        return 1;
     }
 
     // Проверка наличия точки в конце строки
@@ -45,11 +62,6 @@ int main() {
             printf("Ошибка: между словами не должно быть пробелов, только запятые.\n");
             return 1;
         }
-    }
-
-    if (!hasComma) {
-        printf("Ошибка: строка должна содержать хотя бы одну запятую.\n");
-        return 1;
     }
 
     // Разделение строки на слова по запятым

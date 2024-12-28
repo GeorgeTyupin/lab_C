@@ -120,6 +120,14 @@ Node* inputPolynomial() {
     return top;
 }
 
+void freePolynomial(Node* head) {
+    Node* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
 
 int main() {
     // Ввод многочлена с консоли

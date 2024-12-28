@@ -43,7 +43,7 @@ void printPolynomial(Node* head) {
 }
 
 // Функция для удаления членов с степенями больше заданной
-Node* removeHigherPowers(Node* head, int k) {
+Node* removeHigherPowers(Node* head, double k) {
     Node* temp = head;
     Node* prev = NULL;
 
@@ -66,6 +66,19 @@ Node* removeHigherPowers(Node* head, int k) {
     return head;
 }
 
+// Проверяет, существует ли член с заданной степенью
+int doesPowerExist(Node* head, int power) {
+    Node* temp = head;
+    while (temp != NULL) {
+        if (temp->power == power) {
+            return 1;
+        }
+        temp = temp->next;
+    }
+    return 0;
+}
+
+
 // Функция для ввода многочлена с клавиатуры
 Node* inputPolynomial() {
     Node* head = NULL;
@@ -83,6 +96,12 @@ Node* inputPolynomial() {
         int coefficient, power;
         printf("Введите коэффициент и степень для члена %d (через пробел): ", i + 1);
         scanf("%d %d", &coefficient, &power);
+
+        if (doesPowerExist(head, power)) { // Проверяем, нет ли уже члена с такой степенью
+            printf("\nОшибка: член с такой степенью уже существует или вы ввели не число. Попробуйте снова.\n");
+            exit(EXIT_FAILURE);
+        }
+
 
         Node* newNode = createNode(coefficient, power);
         if (head == NULL) {
@@ -121,12 +140,11 @@ int main() {
 
 
     printf("Введите максимальную степень: ");
-    scanf("%lf", &k);
 
-    if (k <= 0 || k != (int)k) {
-        printf("Ошибка: Число должно быть натуральным.\n");
-        freePolynomial(polynomial);
-        return 1;
+    if ( scanf("%lf", &k) == 0 ){
+        printf("Ошибка: введено не число.\n");
+        freePolynomial(polynomial); // Освобождаем память
+      return 0; // Успешное завершение программы
     }
 
     polynomial = removeHigherPowers(polynomial, k);

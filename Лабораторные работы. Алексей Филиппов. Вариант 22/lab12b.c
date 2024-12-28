@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h> // Для функции islower
+#include <ctype.h>
 
 // Определение структуры узла двусвязного списка
 typedef struct Node {
@@ -34,40 +34,82 @@ void add_node(Node **head, const char *word) {
     }
 }
 
+// Функция для поиска слова с минимальной длиной
+Node* find_min_length_word(Node *head) {
+    Node *min_node = head;
+    while (head != NULL) {
+        if (strlen(head->word) < strlen(min_node->word)) {
+            min_node = head;
+        }
+        head = head->next;
+    }
+    return min_node;
+}
+
+// Функция для поиска слова с максимальной длиной
+Node* find_max_length_word(Node *head) {
+    Node *max_node = head;
+    while (head != NULL) {
+        if (strlen(head->word) > strlen(max_node->word)) {
+            max_node = head;
+        }
+        head = head->next;
+    }
+    return max_node;
+}
+
+// Функция для проверки, одинаковы ли длины всех слов
+int all_words_same_length(Node *head) {
+    if (head == NULL) return 1; // Пустой список считается одинаковым
+
+    size_t length = strlen(head->word);
+    head = head->next;
+
+    while (head != NULL) {
+        if (strlen(head->word) != length) {
+            return 0; // Найдено слово с другой длиной
+        }
+        head = head->next;
+    }
+    return 1; // Все слова имеют одинаковую длину
+}
+
+// Функция для вставки нового узла перед заданным узлом
+void insert_before(Node **head, Node *node, const char *word) {
+    Node *new_node = create_node(word);
+    new_node->next = node;
+    new_node->prev = node->prev;
+
+    if (node->prev != NULL) {
+        node->prev->next = new_node;
+    } else {
+        *head = new_node; // Если вставляем перед головой списка
+    }
+
+    node->prev = new_node;
+}
+
 // Функция для вывода всех слов из списка
 void print_list(Node *head) {
-    Node *temp = head; // Указатель для перемещения по списку
-    while (temp != NULL) { // Пока не достигли конца списка
-        printf("%s ", temp->word); // Выводим слово
-        temp = temp->next; // Переходим к следующему узлу
+    Node *temp = head;
+    while (temp != NULL) {
+        printf("%s ", temp->word);
+        temp = temp->next;
     }
-    printf("\n"); // Завершаем строку
+    printf("\n");
 }
 
-// Функция для удаления слов, начинающихся с заданной буквы
-void remove_words_starting_with(Node **head, char letter) {
-    Node *temp = *head; // Указатель для перемещения по списку
-    while (temp != NULL) { // Пока есть узлы в списке
-        if (temp->word[0] == letter) { // Если слово начинается с заданной буквы
-            Node *to_delete = temp; // Сохраняем указатель на текущий узел
-            if (temp->prev) { // Если узел не первый
-                temp->prev->next = temp->next; // Перенаправляем следующий указатель предыдущего узла
-            } else { // Если узел первый
-                *head = temp->next; // Голова списка смещается на следующий узел
-            }
-            if (temp->next) { // Если узел не последний
-                temp->next->prev = temp->prev; // Перенаправляем предыдущий указатель следующего узла
-            }
-            temp = temp->next; // Переходим к следующему узлу
-            free(to_delete->word); // Освобождаем память для строки
-            free(to_delete);       // Освобождаем память для узла
-        } else {
-            temp = temp->next; // Переходим к следующему узлу
-        }
+// Освобождение памяти, выделенной под список
+void free_list(Node *head) {
+    Node *temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp->word);
+        free(temp);
     }
 }
 
-// Проверка на корректность строки (только строчные латинские буквы, пробелы и точка)
 int validate_string(const char *str) {
     int length = strlen(str);
 
@@ -88,13 +130,12 @@ int validate_string(const char *str) {
 
 int main() {
     char input[1000]; // Буфер для ввода строки
-    char letter;      // Буква, по которой будет производиться фильтрация
 
     // Ввод строки от пользователя
     printf("Введите строку: ");
     fgets(input, sizeof(input), stdin); // Считываем строку с пробелами
 
-    // Удаляем символ новой строки, если он есть
+    // Удаляем символ новой строки и точку
     input[strcspn(input, "\n")] = '\0';
 
     // Проверяем строку на корректность
@@ -103,12 +144,7 @@ int main() {
         return 1; // Завершаем программу с кодом ошибки
     }
 
-    // Удаляем точку ('.') в конце строки
     input[strcspn(input, ".")] = '\0';
-
-    // Ввод буквы для фильтрации
-    printf("Введите букву для удаления слов, начинающихся с неё: ");
-    scanf(" %c", &letter);
 
     Node *head = NULL; // Указатель на начало списка (изначально NULL)
 
@@ -118,26 +154,32 @@ int main() {
         add_node(&head, word); // Добавляем слово в список
         word = strtok(NULL, " "); // Получаем следующее слово
     }
-
+    
     // Выводим исходный список
     printf("Исходный список: ");
     print_list(head);
 
-    // Удаляем слова, начинающиеся с заданной буквы
-    remove_words_starting_with(&head, letter);
+    // Проверяем, одинаковы ли длины всех слов
+    if (!all_words_same_length(head)) {
+        // Находим слова с минимальной и максимальной длиной
+        Node *min_node = find_min_length_word(head);
+        Node *max_node = find_max_length_word(head);
 
-    // Выводим список после модификации
-    printf("Список после модификации: ");
-    print_list(head);
+        // Вставляем перед максимальным словом копию минимального слова
+        if (min_node != NULL && max_node != NULL) {
+            insert_before(&head, max_node, min_node->word);
+        }
 
-    // Освобождаем память, выделенную под список
-    Node *temp;
-    while (head != NULL) {
-        temp = head;        // Сохраняем текущий узел
-        head = head->next;  // Переходим к следующему узлу
-        free(temp->word);   // Освобождаем память для строки
-        free(temp);         // Освобождаем память для узла
+        // Выводим список после модификации
+        printf("Список после модификации: ");
+        print_list(head);
+    } else {
+        printf("Все слова имеют одинаковую длину. Список не изменен.\n");
+        print_list(head);
     }
 
-    return 0; // Успешное завершение программы
+    // Освобождаем память, выделенную под список
+    free_list(head);
+
+    return 0;
 }

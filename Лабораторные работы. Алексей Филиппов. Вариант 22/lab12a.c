@@ -10,156 +10,130 @@ typedef struct Node {
 
 // Функция для создания нового узла списка
 Node* createNode(int coefficient, int power) {
-    // Выделяем память для нового узла
     Node* newNode = (Node*)malloc(sizeof(Node));
-    if (newNode == NULL) { // Проверяем успешность выделения памяти
+    if (newNode == NULL) {
         printf("Ошибка выделения памяти\n");
-        exit(1); // Завершаем программу в случае ошибки
+        exit(1);
     }
-    newNode->coefficient = coefficient; // Устанавливаем коэффициент
-    newNode->power = power; // Устанавливаем степень
-    newNode->next = NULL; // Изначально следующий узел отсутствует
-    return newNode; // Возвращаем указатель на созданный узел
+    newNode->coefficient = coefficient;
+    newNode->power = power;
+    newNode->next = NULL;
+    return newNode;
 }
 
 // Функция для вывода многочлена
 void printPolynomial(Node* head) {
-    Node* temp = head; // Указатель для перемещения по списку
-    while (temp != NULL) { // Проходим по всем узлам списка
-        if (temp->coefficient != 0) { // Если коэффициент ненулевой, выводим член
+    Node* temp = head;
+    while (temp != NULL) {
+        if (temp->coefficient != 0) {
             if (temp->coefficient > 0 && temp != head) {
-                printf("+"); // Добавляем знак "+" перед положительным членом (кроме первого)
+                printf("+");
             }
-            // Упрощаем вывод в зависимости от коэффициента и степени
-            if (temp->coefficient == 1 && temp->power != 0) {
-                printf("x^%d ", temp->power); // Коэффициент 1 и ненулевая степень
-            } else if (temp->coefficient == -1 && temp->power != 0) {
-                printf("-x^%d ", temp->power); // Коэффициент -1 и ненулевая степень
+            if (temp->power == 0) {
+                printf("%d", temp->coefficient);
+            } else if (temp->power == 1) {
+                printf("%dx", temp->coefficient);
             } else {
-                printf("%dx^%d ", temp->coefficient, temp->power); // Общий случай
+                printf("%dx^%d", temp->coefficient, temp->power);
             }
         }
-        temp = temp->next; // Переходим к следующему узлу
+        temp = temp->next;
     }
-    printf("\n"); // Завершаем строку
+    printf("\n");
 }
 
-// Функция для удаления членов с меньшей степенью
-Node* removeLowerPowers(Node* head, int k) {
-    Node* temp = head; // Указатель для текущего узла
-    Node* prev = NULL; // Указатель на предыдущий узел
+// Функция для удаления членов с степенями больше заданной
+Node* removeHigherPowers(Node* head, int k) {
+    Node* temp = head;
+    Node* prev = NULL;
 
     while (temp != NULL) {
-        if (temp->power < k) { // Если степень меньше заданного значения
-            if (prev == NULL) { // Если текущий узел — первый
-                head = temp->next; // Сдвигаем голову списка
-                free(temp); // Освобождаем память текущего узла
-                temp = head; // Перемещаемся к следующему узлу
-            } else { // Если текущий узел не первый
-                prev->next = temp->next; // Удаляем текущий узел из списка
-                free(temp); // Освобождаем память
-                temp = prev->next; // Переходим к следующему узлу
+        if (temp->power > k) {
+            if (prev == NULL) {
+                head = temp->next;
+                free(temp);
+                temp = head;
+            } else {
+                prev->next = temp->next;
+                free(temp);
+                temp = prev->next;
             }
-        } else { // Если степень >= k, просто перемещаем указатели
-            prev = temp; 
+        } else {
+            prev = temp;
             temp = temp->next;
         }
     }
-    return head; // Возвращаем обновленный список
-}
-
-// Проверяет, является ли число натуральным
-int is_natural(double n) {
-    return (n <= 0 || (int)n != n) ? 1 : 0; // Возвращает 1, если число не натуральное
-}
-
-// Проверяет, существует ли член с заданной степенью
-int doesPowerExist(Node* head, int power) {
-    Node* temp = head; // Указатель для перемещения по списку
-    while (temp != NULL) {
-        if (temp->power == power) { // Если степень найдена, возвращаем 1
-            return 1;
-        }
-        temp = temp->next; // Переход к следующему узлу
-    }
-    return 0; // Возвращаем 0, если степень не найдена
+    return head;
 }
 
 // Функция для ввода многочлена с клавиатуры
 Node* inputPolynomial() {
-    Node* top = NULL; // Указатель на начало списка
-    Node* tail = NULL; // Указатель на конец списка
-    float n; // Количество членов многочлена
+    Node* head = NULL;
+    Node* tail = NULL;
+    float n;
 
     printf("Введите количество членов многочлена: ");
-    scanf("%f", &n); // Читаем количество членов
-    if (is_natural(n)) { // Проверяем, что введено натуральное число
+    scanf("%f", &n);
+    if (n <= 0 || (int)n != n) {
         printf("Ошибка ввода.\n");
-        return NULL; // Возвращаем NULL в случае ошибки
+        return NULL;
     }
 
     for (int i = 0; i < n; i++) {
-        double coefficient, power;
+        int coefficient, power;
         printf("Введите коэффициент и степень для члена %d (через пробел): ", i + 1);
-        scanf("%lf %lf", &coefficient, &power); // Читаем коэффициент и степень
+        scanf("%d %d", &coefficient, &power);
 
-        if (doesPowerExist(top, power)) { // Проверяем, нет ли уже члена с такой степенью
-            printf("\nОшибка: член с такой степенью уже существует или вы ввели не число. Попробуйте снова.\n");
-            exit(EXIT_FAILURE); // Завершаем программу в случае ошибки
-        }
-
-        Node* newNode = createNode(coefficient, power); // Создаем новый узел
-
-        if (top == NULL) { // Если список пуст
-            top = newNode; // Устанавливаем первый узел
+        Node* newNode = createNode(coefficient, power);
+        if (head == NULL) {
+            head = newNode;
             tail = newNode;
-        } else { // Если список не пуст
-            tail->next = newNode; // Добавляем узел в конец
+        } else {
+            tail->next = newNode;
             tail = newNode;
         }
     }
 
-    return top; // Возвращаем указатель на голову списка
+    return head;
 }
 
 // Функция для освобождения памяти
 void freePolynomial(Node* head) {
     Node* temp;
-    while (head != NULL) { // Проходим по всем узлам
-        temp = head; 
-        head = head->next; // Переходим к следующему узлу
-        free(temp); // Освобождаем память текущего узла
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
     }
 }
 
 int main() {
-    double N;
-    // Ввод многочлена с консоли
+    double k;
     printf("Ввод многочлена.\n");
-    Node* polynomial = inputPolynomial(); // Ввод многочлена
+    Node* polynomial = inputPolynomial();
     if (polynomial == NULL) { // Проверяем на ошибки ввода
-        return 0; // Завершаем программу
+        return 0;
     }
-    
+
     printf("Исходный многочлен: ");
-    printPolynomial(polynomial); // Вывод исходного многочлена
+    printPolynomial(polynomial);
 
-    puts("Введите число (натуральное), члены со степениями меньше чем это число будут удалены:");
-    scanf("%lf", &N);
 
-    //Проверка на натуральность числа N
-    if (N <= 0 || N != (int)N) {
+
+    printf("Введите максимальную степень: ");
+    scanf("%lf", &k);
+
+    if (k <= 0 || k != (int)k) {
         printf("Ошибка: Число должно быть натуральным.\n");
         freePolynomial(polynomial);
         return 1;
     }
 
-    // Удаление членов со степенями меньше N
-    polynomial = removeLowerPowers(polynomial, (int)N);
+    polynomial = removeHigherPowers(polynomial, k);
 
-    printf("Многочлен после удаления слагаемых с степенями меньше %d: ", (int)N);
-    printPolynomial(polynomial); // Вывод результата
+    printf("Многочлен после удаления членов со степенями больше %d: ", (int)k);
+    printPolynomial(polynomial);
 
-    freePolynomial(polynomial); // Освобождаем память
-    return 0; // Успешное завершение программы
+    freePolynomial(polynomial);
+    return 0;
 }
